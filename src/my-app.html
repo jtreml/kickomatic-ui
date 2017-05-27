@@ -31,40 +31,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template>
     <style>
       :host {
-        --app-primary-color: #4285f4;
-        --app-secondary-color: black;
+        --app-color-sky: #021532;
+        --app-color-grass: #54C402;
+
+        --app-secondary-color: white;
+
+        --primary-text-color: white;
 
         display: block;
       }
 
-      app-drawer-layout:not([narrow]) [drawer-toggle] {
-        display: none;
+      #top {
+        width: 100%;
+        height: 50%;
+        background-color: var(--app-color-sky);
+        margin-bottom: -4px;
       }
 
-      app-header {
-        color: #fff;
-        background-color: var(--app-primary-color);
+      #bottom {
+        width: 100%;
+        height: 50%;
+        background-color: var(--app-color-grass);
+        border-top: 4px solid var(--app-secondary-color);
       }
 
-      app-header paper-icon-button {
-        --paper-icon-button-ink-color: white;
-      }
-
-      .drawer-list {
-        margin: 0 20px;
-      }
-
-      .drawer-list a {
-        display: block;
-        padding: 0 16px;
-        text-decoration: none;
-        color: var(--app-secondary-color);
-        line-height: 40px;
-      }
-
-      .drawer-list a.iron-selected {
-        color: black;
-        font-weight: bold;
+      #content {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
       }
     </style>
 
@@ -75,39 +70,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
 
-    <app-drawer-layout fullbleed>
-      <!-- Drawer content -->
-      <app-drawer id="drawer" slot="drawer">
-        <app-toolbar>Menu</app-toolbar>
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="login" href="login">Login View</a>
-          <a name="game" href="game">Game View</a>
-          <a name="statistics" href="statistics">Statistics View</a>
-        </iron-selector>
-      </app-drawer>
+    <div id="top"></div>
+    <div id="bottom"></div>
 
-      <!-- Main content -->
-      <app-header-layout has-scrolling-region>
-
-        <app-header slot="header" condenses reveals effects="waterfall">
-          <app-toolbar>
-            <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
-            <div main-title>My App</div>
-          </app-toolbar>
-        </app-header>
-
-        <iron-pages
-            selected="[[page]]"
-            attr-for-selected="name"
-            fallback-selection="view404"
-            role="main">
-          <login-view name="login"></login-view>
-          <game-view name="game"></game-view>
-          <statistics-view name="statistics"></statistics-view>
-          <my-view404 name="view404"></my-view404>
-        </iron-pages>
-      </app-header-layout>
-    </app-drawer-layout>
+    <iron-pages
+        id="content"
+        selected="[[page]]"
+        attr-for-selected="name"
+        fallback-selection="view404"
+        role="main">
+      <login-view name="login"></login-view>
+      <game-view name="game"></game-view>
+      <statistics-view name="statistics"></statistics-view>
+      <my-view404 name="view404"></my-view404>
+    </iron-pages>
+   
   </template>
 
   <script>
@@ -152,11 +129,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // If no page was found in the route data, page will be an empty string.
         // Deault to 'login' in that case.
         this.page = page || 'login';
-
-        // Close a non-persistent drawer when the page & route are changed.
-        if (!this.$.drawer.persistent) {
-          this.$.drawer.close();
-        }
       }
 
       _pageChanged(page) {
